@@ -234,7 +234,6 @@ sys_change_tickets(void){
 プロセスのPID、チケット数、呼び出された回数の３つの情報を出力するシステムコール。
 
 ```
-//nezu added for checking lottery_schedule
 uint64
 sys_print_info(void){
   struct proc *p;
