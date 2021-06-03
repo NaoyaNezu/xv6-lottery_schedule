@@ -2,6 +2,12 @@
 xv6においてlottery_schedulerを実装する。
 ## 結果
 ```
+$ test_sys
+pid: 7, ticket_num: 30, called: 965
+pid: 6, ticket_num: 20, called: 672
+pid: 9, ticket_num: 50, called: 1645
+pid: 8, ticket_num: 40, called: 1379
+pid: 5, ticket_num: 10, called: 359
 
 ```
 
