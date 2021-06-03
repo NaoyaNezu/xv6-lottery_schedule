@@ -16,8 +16,8 @@ pid: 9, ticket_num: 50, called: 1645
 ## lottery_schedulerの実装
 を実装する上で改良した部分を以下に示す。
 ### -proc.h
-proc構造体に、チケット数を格納する**tickets**を追加。
-**called_counter**はスケジューラーの評価時にプロセスが呼び出された回数を計測するために追加。
+proc構造体に、チケット数を格納する```tickets```を追加。
+```called_counter```はスケジューラーの評価時にプロセスが呼び出された回数を計測するために追加。
 ```
 struct proc {
   （省略）
