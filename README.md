@@ -47,6 +47,7 @@ found:
   }
 ```
 
+
 **・freeproc()**
 
 プロセスの解放時に`tickets`と`called_couter`を０で初期化。
@@ -60,6 +61,8 @@ freeproc(struct proc *p)
   （省略）
 }
 ```
+
+
 **・total_tickets_num**
 
 プロセスリスト内の現在`RUNNABLE`な状態のプロセスのチケット数の合計を返す関数。
@@ -69,9 +72,7 @@ int total_ticket_num(void){
   struct proc *p;
   int sum_tickets = 0;
   for(p = proc; p < &proc[NPROC];p++){
-    //printf("out;%d,%d\n",p->pid,p->tickets);
     if(p->state == RUNNABLE){
-      //printf("      in;%d\n",p->tickets);
       sum_tickets += p->tickets;
     }
   }
@@ -79,6 +80,71 @@ int total_ticket_num(void){
 }
 ```
 
+
+**・scheduler()**
+
+lottery_schedulerのメインとなる部分。`winner_ticket`には、０〜`total_tickets−１`までの乱数が格納される。
+
+無限ループのはじめにチケットの総数の取得と、乱数の取得の処理を行う。
+
+その後のfor文内で`RUNNABLE`なプロセスのチケットを`coutenr`に足していき、その値が`winner_ticket`を超えた時点でそのプロセスにスイッチ。
+
+プロセスが`RUNNABLE`でない場合や、選ばれたプロセスでなかった場合は、lockを解放し、continue命令でfor文の先頭に戻る。
+```c
+void
+scheduler(void)
+{
+  struct proc *p;
+  struct cpu *c = mycpu();
+  //////
+  int total_tickets = 0; //number of the sum of tickets
+  int counter = 0;
+  int winner_ticket; //random number
+  //////
+  c->proc = 0;
+  for(;;){
+    // Avoid deadlock by ensuring that devices can interrupt.
+    intr_on();
+    //resetting the variables to make scheduler start from the beginning of the process queue
+    total_tickets = 0;
+    counter = 0;
+    winner_ticket = 0;;
+
+    //calculate total number of tickets
+    total_tickets = total_ticket_num();
+
+    //pick a random ticket from total available ticket
+    winner_ticket = random_at_most(total_tickets);
+
+    for(p = proc; p < &proc[NPROC]; p++) {
+      acquire(&p->lock);
+      if(p->state != RUNNABLE){
+        release(&p->lock); //added
+        continue;
+      }
+      counter += p->tickets;
+      if(counter < winner_ticket){
+        release(&p->lock); //added
+        continue;
+      }
+        
+      // Switch to chosen process.  It is the process's job
+      // to release its lock and then reacquire it
+      // before jumping back to us.
+      p->called_counter += 1; //increment called counter
+      p->state = RUNNING;
+      c->proc = p;
+      swtch(&c->context, &p->context);
+
+      // Process is done running for now.
+      // It should have changed its p->state before coming back.
+      c->proc = 0;
+      release(&p->lock);
+      break; //reset the location in the list
+    }
+  }
+}
+```
 ### rand.c
 
 ## スケジューラーの評価
