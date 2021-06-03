@@ -1,3 +1,4 @@
 # xv6-lottery_schedule
-I implemented lottery_scheduler on xv6
-# 
+xv6においてlottery_schedulerを実装する。
+# 結果
+
