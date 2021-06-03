@@ -2,6 +2,14 @@
 xv6においてlottery_schedulerを実装する。
 ## 結果
 ```
-fast
+
 ```
 
+## lottery_schedulerの実装
+### proc.h
+### proc.c
+### rand.c
+
+## スケジューラーの評価
+### test_sys.c
+### proc.h
