@@ -18,7 +18,7 @@ pid: 9, ticket_num: 50, called: 1645
 ### proc.h
 proc構造体に、チケット数を格納する```tickets```を追加。
 ```called_counter```はスケジューラーの評価時にプロセスが呼び出された回数を計測するために追加。
-```
+```c
 struct proc {
   （省略）
   int tickets;                 // ticket number added
