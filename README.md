@@ -16,8 +16,8 @@ pid: 9, ticket_num: 50, called: 1645
 ## lottery_schedulerの実装
 を実装する上で改良した部分を以下に示す。
 ### proc.h
-proc構造体に、チケット数を格納する```tickets```を追加。
-```called_counter```はスケジューラーの評価時にプロセスが呼び出された回数を計測するために追加。
+proc構造体に、チケット数を格納する`tickets`を追加。
+`called_counter`はスケジューラーの評価時にプロセスが呼び出された回数を計測するために追加。
 ```c
 struct proc {
   （省略）
@@ -27,7 +27,9 @@ struct proc {
 ```
 ### proc.c
 **・alloc_proc()**
-```
+プロセス生成時に`tickets`を０で初期化する処理を追加。
+また、スケジューラー評価のために`called_couter`も初期化。
+```c
 static struct proc*
 allocproc(void)
 {
@@ -40,6 +42,18 @@ found:
 
  （省略）
   }
+```
+**・freeproc()**
+プロセスの解放時に`tickets`と`called_couter`を０で初期化。
+```c
+static void
+freeproc(struct proc *p)
+{
+  （省略）
+  p->tickets = 0;
+  p->called_counter = 0;
+  （省略）
+}
 ```
 ### rand.c
 
